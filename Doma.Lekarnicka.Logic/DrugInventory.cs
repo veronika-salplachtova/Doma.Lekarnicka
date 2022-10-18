@@ -6,12 +6,21 @@ public class DrugInventory
 
     public DrugInventory()
     {
-        drugList = new List<Drug>();
+        drugList = new ();
+
     }
+
+    public IReadOnlyList<Drug> DrugList { get { return drugList; } }
 
     public void AddDrug(Drug drugItem)
     {
         drugList.Add(drugItem);
+    }
+
+    public void Remove(string drugName)
+    {
+        Drug drugItem = drugList.Find(d => d.Name.Equals(drugName, StringComparison.OrdinalIgnoreCase));
+        Remove(drugItem);              
     }
 
     public void Remove(Drug drugItem)
@@ -19,5 +28,4 @@ public class DrugInventory
         drugList.Remove(drugItem);
     }
 
-    public IReadOnlyList<Drug> DrugList {get {return drugList;} }
 }

@@ -18,6 +18,14 @@ namespace Doma.Lekarnicka.Logic.Tests
             Assert.Contains(drug, drugs.DrugList);
         }
 
-
-     }
+        [Fact]
+        public void DrugIsRemoveFromDrugList()
+        {
+            DrugInventory drugs = new();
+            Drug drug = new("Paralen");
+            drugs.AddDrug(drug);
+            drugs.Remove(drug);
+            Assert.DoesNotContain(drug, drugs.DrugList);
+        }
+    }
 }
