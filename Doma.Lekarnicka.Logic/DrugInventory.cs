@@ -17,15 +17,18 @@ public class DrugInventory
         drugList.Add(drugItem);
     }
 
-    public void Remove(string drugName)
-    {
-        Drug drugItem = drugList.Find(d => d.Name.Equals(drugName, StringComparison.OrdinalIgnoreCase));
-        Remove(drugItem);              
+     public void Remove (string drugToRemove)
+     {
+        Drug drugItem = drugList.Find(d => d.Name.Equals(drugToRemove,StringComparison.InvariantCultureIgnoreCase));
+        if (drugItem != null)
+        {
+            drugList.Remove(drugItem);
+            Console.WriteLine("The drug has been deleted.");
+        }
+        else
+        {
+            Console.WriteLine("The drug was not found in list of medication.");
+        }
     }
-
-    public void Remove(Drug drugItem)
-    {
-        drugList.Remove(drugItem);
-    }
-
+     
 }
