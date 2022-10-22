@@ -77,8 +77,7 @@ public class DomaciLekarnickaConsole
     }
 
     private void ViewAllItems()
-    {
-        
+    {        
         Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15,' ') + "Expiration");
         foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
         {
@@ -91,7 +90,7 @@ public class DomaciLekarnickaConsole
         Console.WriteLine("\nList of medical supplies: \nItem name");
         foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
         {
-            if (item is MedicalSupplies medicalSupplies)
+            if (item is MedicalSupply medicalSupplies)
             {
                 Console.WriteLine(item.ToString());
             }
@@ -132,7 +131,7 @@ public class DomaciLekarnickaConsole
                 }
                 else if (userChoiceItemType == HomeFirstAidKitItemType.MedicalSupply)
                 {
-                    homeFirstAidKitInventory.AddItem(new MedicalSupplies(itemName));
+                    homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName));
                 }
             }
         }

@@ -1,8 +1,8 @@
 ﻿namespace Doma.Lekarnicka.Logic;
 
-public class MedicalSupplies : HomeFirstAidKitItem
+public class MedicalSupply : HomeFirstAidKitItem
 {
-    public MedicalSupplies(string name) : base(name)
+    public MedicalSupply(string name) : base(name)
     { 
     }
 
