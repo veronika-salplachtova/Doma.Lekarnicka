@@ -1,5 +1,5 @@
 namespace Doma.Lekarnicka.Logic.Tests
-{
+{/*
     public class DrugTests
     {
         [Fact]
@@ -12,20 +12,20 @@ namespace Doma.Lekarnicka.Logic.Tests
         [Fact]
         public void DrugIsAddToDrugList()
         {
-            DrugInventory drugs = new();
+            HomeFirstAidKitInventory drugs = new();
             Drug drug = new("Paralen");
-            drugs.AddDrug(drug);
-            Assert.Contains(drug, drugs.DrugList);
+            drugs.AddItem(drug);
+            Assert.Contains(drug, drugs.HomeFirstAidKitList);
         }
 
         [Fact]
         public void DrugIsRemoveFromDrugList()
         {
-            DrugInventory drugs = new();
+            HomeFirstAidKitInventory drugs = new();
             Drug drug = new("Paralen");
-            drugs.AddDrug(drug);
+            drugs.AddItem(drug);
             drugs.Remove(drug);
-            Assert.DoesNotContain(drug, drugs.DrugList);
+            Assert.DoesNotContain(drug, drugs.HomeFirstAidKitList);
         }
-    }
+    }*/
 }

@@ -1,13 +1,17 @@
 ﻿namespace Doma.Lekarnicka.Logic
 {
-    public class Drug
+        public class Drug : HomeFirstAidKitItem
     {
-        public string Name { get; }
-
-        public Drug(string name)
+        public Drug(string name, DateOnly expiration) : base(name)
         {
-            Name = name;
+            this.Expiration = expiration;  
         }
 
+        public DateOnly Expiration { get; }
+
+        public override string ToString()
+        {
+            return $"{Name.PadRight(15,' ')}{Expiration}";
+        }
     }
 }

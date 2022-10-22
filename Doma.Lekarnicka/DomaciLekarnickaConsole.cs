@@ -3,32 +3,69 @@ using System.Reflection.Metadata.Ecma335;
 
 namespace Doma.Lekarnicka;
 
+enum HomeFirstAidKitItemType
+{
+    Drug,
+    MedicalSupply
+}
+
 public class DomaciLekarnickaConsole
 {
-    private DrugInventory drugInventory;
+    private HomeFirstAidKitInventory homeFirstAidKitInventory;
 
-    public DomaciLekarnickaConsole()
-    {
-        drugInventory = new();
-    }
-
-    Dictionary<string, string> userOptions = new()
+    private Dictionary<string, string> userOptions = new()
     {
         {"1", "View drug list" },
         {"2", "Add new drug"},
-        {"3", "Remove a drug" },
-        {"4", "End" }
+        {"3", "Add new medical supplies"},
+        {"4", "Remove a drug" },
+        {"5", "End" }
     };
 
-
-    public void WriteOnConsoleOptionToChoose(string number, string choice)
+    public DomaciLekarnickaConsole()
     {
-        Console.WriteLine(number.PadRight(3, ' ') + choice);
-        Action myAction = ViewOptionsTable;
+        homeFirstAidKitInventory = new();
     }
 
 
-    public void ViewOptionsTable()
+    public void Run()
+    {
+        Console.WriteLine("Home first aid kit");
+        ViewOptionsTable();
+        string choice = Console.ReadLine();
+
+        while (choice != "5")
+        {
+            switch (choice)
+            {
+
+                case "1":
+                    ViewAllItems();
+                    break;
+
+                case "2":
+                    AddNewItem(HomeFirstAidKitItemType.Drug);
+                    break;
+
+                case "3":
+                    AddNewItem(HomeFirstAidKitItemType.MedicalSupply);
+                    break;
+
+                case "4":
+                    RemoveItem();
+                    break;
+
+                default:
+                    Console.WriteLine("There is no such option");
+                    break;
+            }
+            ViewOptionsTable();
+            choice = Console.ReadLine();
+        }
+    }
+
+
+    private void ViewOptionsTable()
     {
         Console.WriteLine("");
         Console.WriteLine("Choose one of the following options:");
@@ -37,23 +74,91 @@ public class DomaciLekarnickaConsole
         {
             WriteOnConsoleOptionToChoose(option.Key, option.Value);
         }
-
     }
 
-    public void ViewAllDrugs(DrugInventory drugs)
+    private void ViewAllItems()
     {
-        foreach (Drug drug in drugs.DrugList)
+        
+        Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15,' ') + "Expiration");
+        foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
         {
-            Console.WriteLine(drug.Name);
+            if (item is Drug drug)
+            {
+                Console.WriteLine(item.ToString());
+            }
         }
-        if (drugs.DrugList.Count == 0)
+
+        Console.WriteLine("\nList of medical supplies: \nItem name");
+        foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
         {
-            Console.WriteLine("The drug list is empty.");
+            if (item is MedicalSupplies medicalSupplies)
+            {
+                Console.WriteLine(item.ToString());
+            }
+        }
+
+        if (homeFirstAidKitInventory.HomeFirstAidKitList.Count == 0)
+        {
+            Console.WriteLine("The list is empty.");
         }
     }
 
-    public string GetNonEmptyStringFromUser()
+    private void AddNewItem(HomeFirstAidKitItemType userChoiceItemType)
     {
+        string itemName = GetNonEmptyStringFromUser("Write the name of the item.");
+        bool addItemToList = true;
+
+        if (itemName != null)
+        {
+            if (homeFirstAidKitInventory.DoesExistItemWithName(itemName))
+            {
+                Console.WriteLine($"The list already contains this item {itemName}. Do you want to add it anyway?\n1 - Yes\n2 - No.");
+                string userChoiceAddExistingItem = Console.ReadLine();
+                if (userChoiceAddExistingItem != "1")
+                {
+                    addItemToList = false;
+                }
+            }
+
+            if (addItemToList)
+            {
+                if (userChoiceItemType == HomeFirstAidKitItemType.Drug)
+                {
+                    DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY or D/M/YYYY.");
+                    if (itemExpiration != null)
+                    {
+                        homeFirstAidKitInventory.AddItem(new Drug(itemName, itemExpiration.Value));
+                    }
+                }
+                else if (userChoiceItemType == HomeFirstAidKitItemType.MedicalSupply)
+                {
+                    homeFirstAidKitInventory.AddItem(new MedicalSupplies(itemName));
+                }
+            }
+        }
+    }
+
+
+    private void RemoveItem()
+    {
+        string itemNameForRemove = GetNonEmptyStringFromUser("Write the name of the drug or the medical supplies.");
+        if (itemNameForRemove != null)
+        {
+            if (homeFirstAidKitInventory.DoesExistItemWithName(itemNameForRemove))
+            {
+                homeFirstAidKitInventory.Remove(itemNameForRemove);
+                Console.WriteLine($"{itemNameForRemove} has been removed from the inventory.");
+            }
+            else
+            {
+                Console.WriteLine($"{itemNameForRemove} couldn't be deleted because doesn't exist in the inventory.");
+            }
+        }
+    }
+
+    private string GetNonEmptyStringFromUser(string textForUser)
+    {
+        Console.WriteLine(textForUser);
         string stringForVerification = Console.ReadLine();
         while (string.IsNullOrWhiteSpace(stringForVerification))
         {
@@ -63,50 +168,30 @@ public class DomaciLekarnickaConsole
             {
                 return null;
             }
-           
         }
         return stringForVerification;
     }
 
-
-    public void Run()
+    private DateOnly? GetNonEmptyAndCorrectDateFromUser(string textForUser)
     {
-        Console.WriteLine("List of medication");
-        ViewOptionsTable();
-        string choice = Console.ReadLine();
+        Console.WriteLine(textForUser);
+        string dateFromUser = Console.ReadLine();
+        DateOnly date;
 
-        while (choice != "4")
+        while (!DateOnly.TryParseExact(dateFromUser, "d/M/yyyy", null, System.Globalization.DateTimeStyles.None, out date))
         {
-            if (choice == "1")
+            Console.WriteLine("Invalid date, please retry or choose another option(*)");
+            dateFromUser = Console.ReadLine();
+            if (dateFromUser == "*")
             {
-                ViewAllDrugs(drugInventory);
+                return null;
             }
-            else if (choice == "2")
-            {
-                Console.WriteLine("Write the name of the drug");
-                string drugName = GetNonEmptyStringFromUser();
-                if (drugName != null)
-                {
-                    drugInventory.AddDrug(new(drugName));
-                    Console.WriteLine("The drug was added.");
-                }
-            }
-            else if (choice == "3")
-            {
-                Console.WriteLine("Write the name of the drug");
-                string drugNameForRemove = GetNonEmptyStringFromUser();
-                if (drugNameForRemove != null)
-                {
-                    drugInventory.Remove(drugNameForRemove);
-                }
-            }
-            else
-            {
-                Console.WriteLine("There is no such option");
-            }
-
-            ViewOptionsTable();
-            choice = Console.ReadLine();
         }
+        return date;
+    }
+
+    private void WriteOnConsoleOptionToChoose(string number, string choice)
+    {
+        Console.WriteLine(number.PadRight(3, ' ') + choice);
     }
 }
