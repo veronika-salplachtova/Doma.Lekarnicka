@@ -77,34 +77,38 @@ public class DomaciLekarnickaConsole
     }
 
     private void ViewAllItems()
-    {        
-        Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15,' ') + "Expiration");
-        foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
-        {
-            if (item is Drug drug)
-            {
-                Console.WriteLine(item.ToString());
-            }
-        }
-
-        Console.WriteLine("\nList of medical supplies: \nItem name");
-        foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
-        {
-            if (item is MedicalSupply medicalSupplies)
-            {
-                Console.WriteLine(item.ToString());
-            }
-        }
-
+    {
         if (homeFirstAidKitInventory.HomeFirstAidKitList.Count == 0)
         {
             Console.WriteLine("The list is empty.");
         }
+        else
+        {
+            Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size".PadRight(15,' ') + "Quantity".PadRight(15, ' ') + "Expiration");
+            foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
+            {
+                if (item is Drug)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+            }
+
+            Console.WriteLine("\nList of medical supplies:" + "\nItem name".PadRight(15, ' ') + "Quantity".PadRight(15, ' '));
+            foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
+            {
+                if (item is MedicalSupply)
+                {
+                    Console.WriteLine(item.ToString());
+                }
+            }
+        }
+
     }
 
     private void AddNewItem(HomeFirstAidKitItemType userChoiceItemType)
     {
-        string itemName = GetNonEmptyStringFromUser("Write the name of the item.");
+        string itemName = GetNonEmptyStringFromUser("Write the name of the item and his strong.");
+
         bool addItemToList = true;
 
         if (itemName != null)
@@ -121,17 +125,25 @@ public class DomaciLekarnickaConsole
 
             if (addItemToList)
             {
-                if (userChoiceItemType == HomeFirstAidKitItemType.Drug)
+                int? quantity = GetNonEmptyAndCorrectInt("Write the quantity of item.");
+                if (quantity != null)
                 {
-                    DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY or D/M/YYYY.");
-                    if (itemExpiration != null)
+                    if (userChoiceItemType == HomeFirstAidKitItemType.Drug)
                     {
-                        homeFirstAidKitInventory.AddItem(new Drug(itemName, itemExpiration.Value));
+                        int? packageSize = GetNonEmptyAndCorrectInt("Write the pakage size.");
+                                           
+                        Console.WriteLine("Write a units of item (pcs, tbl, g, ml)");
+                        string units = Console.ReadLine();
+                        DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY or D/M/YYYY.");
+                        if (itemExpiration != null && packageSize != null)
+                        {
+                            homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize.Value, units, quantity.Value, itemExpiration.Value));
+                        }
                     }
-                }
-                else if (userChoiceItemType == HomeFirstAidKitItemType.MedicalSupply)
-                {
-                    homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName));
+                    else if (userChoiceItemType == HomeFirstAidKitItemType.MedicalSupply)
+                    {
+                        homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName, quantity.Value));
+                    }
                 }
             }
         }
@@ -187,6 +199,24 @@ public class DomaciLekarnickaConsole
             }
         }
         return date;
+    }
+
+    private int? GetNonEmptyAndCorrectInt(string textForUser)
+    {
+        Console.WriteLine(textForUser);
+        string intFromUser = Console.ReadLine();
+        int number;
+     
+        while(!int.TryParse(intFromUser, out number) || number <= 0)
+        {
+            Console.WriteLine("Invalid number, please retry or choose another option(*)");
+            intFromUser = Console.ReadLine();
+            if (intFromUser == "*")
+            {
+                return null;
+            }
+        }
+        return number;
     }
 
     private void WriteOnConsoleOptionToChoose(string number, string choice)

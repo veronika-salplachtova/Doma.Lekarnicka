@@ -3,9 +3,12 @@
 public abstract class HomeFirstAidKitItem
 {
     public string Name { get; }
-    
-    public HomeFirstAidKitItem(string name)
+    public int Quantity { get; }
+
+
+    public HomeFirstAidKitItem(string name, int quantity)
     {
         Name = name;
+        Quantity = quantity;
     }
 }
