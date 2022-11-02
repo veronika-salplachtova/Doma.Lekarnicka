@@ -84,7 +84,7 @@ public class DomaciLekarnickaConsole
         }
         else
         {
-            Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size".PadRight(15,' ') + "Quantity".PadRight(15, ' ') + "Expiration");
+            Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size".PadRight(15, ' ') + "Quantity".PadRight(15, ' ') + "Expiration");
             foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
             {
                 if (item is Drug)
@@ -107,12 +107,12 @@ public class DomaciLekarnickaConsole
 
     private void AddNewItem(HomeFirstAidKitItemType userChoiceItemType)
     {
-        string itemName = GetNonEmptyStringFromUser("Write the name of the item and his strong.");
-
-        bool addItemToList = true;
+        string itemName = GetNonEmptyStringFromUser("Write the name of the item.");
 
         if (itemName != null)
         {
+            bool addItemToList = true;
+
             if (homeFirstAidKitInventory.DoesExistItemWithName(itemName))
             {
                 Console.WriteLine($"The list already contains this item {itemName}. Do you want to add it anyway?\n1 - Yes\n2 - No.");
@@ -128,22 +128,47 @@ public class DomaciLekarnickaConsole
                 int? quantity = GetNonEmptyAndCorrectInt("Write the quantity of item.");
                 if (quantity != null)
                 {
-                    if (userChoiceItemType == HomeFirstAidKitItemType.Drug)
+                    switch(userChoiceItemType)
                     {
-                        int? packageSize = GetNonEmptyAndCorrectInt("Write the pakage size.");
-                                           
-                        Console.WriteLine("Write a units of item (pcs, tbl, g, ml)");
-                        string units = Console.ReadLine();
-                        DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY or D/M/YYYY.");
-                        if (itemExpiration != null && packageSize != null)
-                        {
-                            homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize.Value, units, quantity.Value, itemExpiration.Value));
-                        }
+                        case HomeFirstAidKitItemType.Drug:                                
+                    
+                            DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY.");
+                            if (itemExpiration != null)
+                            {
+                                Console.WriteLine("Do you want to enter the package size?\nYes - 1\nNo - Whatever else.");
+                                int? packageSize;
+                                string units;
+
+                                bool userWantsToEnterPackageSize = Console.ReadLine() == "1";
+
+                                if (userWantsToEnterPackageSize)
+                                {
+                                    packageSize = GetNonEmptyAndCorrectInt("Write the package size.");
+
+                                    if (packageSize != null)
+                                    {
+                                        units = GetNonEmptyStringFromUser("Write a units of item (pcs, tbl, g, ml)");
+                                        if (units != null)
+                                        {
+                                            homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    packageSize = null;
+                                    units = null;
+                                    homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
+                                }
+                            };
+                            break;
+
+                        case HomeFirstAidKitItemType.MedicalSupply:
+                            homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName, quantity.Value));
+                            break;
+                            
                     }
-                    else if (userChoiceItemType == HomeFirstAidKitItemType.MedicalSupply)
-                    {
-                        homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName, quantity.Value));
-                    }
+                    
                 }
             }
         }
@@ -189,7 +214,7 @@ public class DomaciLekarnickaConsole
         string dateFromUser = Console.ReadLine();
         DateOnly date;
 
-        while (!DateOnly.TryParseExact(dateFromUser, "d/M/yyyy", null, System.Globalization.DateTimeStyles.None, out date))
+        while (!DateOnly.TryParseExact(dateFromUser, "d.M.yyyy", null, System.Globalization.DateTimeStyles.None, out date))
         {
             Console.WriteLine("Invalid date, please retry or choose another option(*)");
             dateFromUser = Console.ReadLine();
@@ -205,9 +230,10 @@ public class DomaciLekarnickaConsole
     {
         Console.WriteLine(textForUser);
         string intFromUser = Console.ReadLine();
+
         int number;
-     
-        while(!int.TryParse(intFromUser, out number) || number <= 0)
+
+        while (!int.TryParse(intFromUser, out number) || number <= 0)
         {
             Console.WriteLine("Invalid number, please retry or choose another option(*)");
             intFromUser = Console.ReadLine();

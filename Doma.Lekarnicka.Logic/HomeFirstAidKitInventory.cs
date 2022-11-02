@@ -24,7 +24,6 @@ public class HomeFirstAidKitInventory
 
     public void AddItem(HomeFirstAidKitItem itemToAdd)
     {
-
         homeFirstAidKitList.Add(itemToAdd);
         Console.WriteLine($"The item {itemToAdd.Name} has been added.");
     }
