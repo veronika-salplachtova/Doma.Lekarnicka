@@ -22,7 +22,7 @@ public class ConnectionToMySQL
         }
     }
 
-    public MySqlDataReader ExecuteReader(string sql)
+    public MySqlDataReader ReaderExecute(string sql)
     {
         try
         {

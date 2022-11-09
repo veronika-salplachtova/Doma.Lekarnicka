@@ -17,14 +17,13 @@ public class ConnectionToMySQLTests
         ConnectionToMySQL connection = new();
         connection.Connect();
         string sql = "SELECT 1";
-        MySqlDataReader reader = connection.ExecuteReader(sql);
+        MySqlDataReader reader = connection.ReaderExecute(sql);
         reader.Read();
         int result = reader.GetInt32(0);   
         Assert.Equal(1, result);
     }
 
-    [Fact]
- 
+    [Fact] 
     public void ExecuteNonReader_ReturnsCountOfRemovedItem()
     {
         ConnectionToMySQL connection = new();
@@ -33,4 +32,6 @@ public class ConnectionToMySQLTests
         int result = connection.ExecuteNonQuery(sql);
         Assert.Equal(0, result);
     }
+
+
 }

@@ -84,7 +84,7 @@ public class DomaciLekarnickaConsole
         }
         else
         {
-            Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size".PadRight(15, ' ') + "Quantity".PadRight(15, ' ') + "Expiration");
+            Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size" + "Units".PadRight(15, ' ') + "Quantity".PadRight(15, ' ') + "Expiration");
             foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
             {
                 if (item is Drug)
@@ -151,6 +151,8 @@ public class DomaciLekarnickaConsole
                                         if (units != null)
                                         {
                                             homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
+                                            Console.WriteLine($"The item {itemName} has been added.");
+
                                         }
                                     }
                                 }
@@ -159,12 +161,14 @@ public class DomaciLekarnickaConsole
                                     packageSize = null;
                                     units = null;
                                     homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
+                                    Console.WriteLine($"The item {itemName} has been added.");
                                 }
                             };
                             break;
 
                         case HomeFirstAidKitItemType.MedicalSupply:
                             homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName, quantity.Value));
+                            Console.WriteLine($"The item {itemName} has been added.");
                             break;
                             
                     }
