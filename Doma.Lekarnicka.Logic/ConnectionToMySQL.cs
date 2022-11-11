@@ -22,7 +22,7 @@ public class ConnectionToMySQL
         }
     }
 
-    public MySqlDataReader ReaderExecute(string sql)
+    public MySqlDataReader ExecuteReader(string sql)
     {
         try
         {
@@ -41,11 +41,28 @@ public class ConnectionToMySQL
         try
         {
             MySqlCommand cmd = new MySqlCommand(sql, conn);
-            return cmd.ExecuteNonQuery();
+            return cmd.ExecuteNonQuery();            
         }
         catch
         {
             return -1;
         }
     }
+
+    public int ExecuteScalar(string sql)
+    {
+        try
+        {
+            MySqlCommand cmd = new MySqlCommand(sql, conn);
+            cmd.CommandText = sql;
+            Int32 count = Convert.ToInt32(cmd.ExecuteScalar());
+            return count;
+        }
+        catch
+        {
+            return -1;
+        }
+    }
+
+
 }

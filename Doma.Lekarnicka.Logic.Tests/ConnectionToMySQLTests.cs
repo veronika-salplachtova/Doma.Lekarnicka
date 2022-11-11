@@ -17,21 +17,29 @@ public class ConnectionToMySQLTests
         ConnectionToMySQL connection = new();
         connection.Connect();
         string sql = "SELECT 1";
-        MySqlDataReader reader = connection.ReaderExecute(sql);
+        MySqlDataReader reader = connection.ExecuteReader(sql);
         reader.Read();
         int result = reader.GetInt32(0);   
         Assert.Equal(1, result);
     }
 
     [Fact] 
-    public void ExecuteNonReader_ReturnsCountOfRemovedItem()
+    public void ExecuteNonReader_ReturnsCountOfRemovedItem() 
     {
         ConnectionToMySQL connection = new();
         connection.Connect();
-        string sql = "DELETE FROM Drugs WHERE 1 = 0";
+        string sql = "DELETE FROM Inventory WHERE 1 = 0";
         int result = connection.ExecuteNonQuery(sql);
         Assert.Equal(0, result);
     }
 
-
+    [Fact]
+    public void ExecuteScalar_ReturnCountOfItem()
+    {
+        ConnectionToMySQL connection = new();
+        connection.Connect();
+        string sql = "SELECT COUNT(*) FROM Inventory WHERE 1=0";
+        int count = connection.ExecuteScalar(sql);
+        Assert.Equal(0, count);
+    }
 }

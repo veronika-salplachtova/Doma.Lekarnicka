@@ -253,4 +253,5 @@ public class DomaciLekarnickaConsole
     {
         Console.WriteLine(number.PadRight(3, ' ') + choice);
     }
+
 }
