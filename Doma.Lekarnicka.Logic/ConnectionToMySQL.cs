@@ -58,7 +58,7 @@ public class ConnectionToMySQL
             Int32 count = Convert.ToInt32(cmd.ExecuteScalar());
             return count;
         }
-        catch
+        catch   
         {
             return -1;
         }

@@ -23,14 +23,16 @@ public class InventoryDb
             while (reader.Read())
             {
                 int itemType = reader.GetInt32(0);
+                HomeFirstAidKitItem item = null;
                 if (itemType == 1)
                 {
-                    list.Add(new Drug(reader.GetString(1), reader.GetInt32(2), reader.GetString(3), reader.GetInt32(4), DateOnly.FromDateTime(reader.GetDateTime(5))));
+                    item = new Drug(reader.GetString(1), reader.IsDBNull(2) ? null : reader.GetInt32(2), reader.IsDBNull(3) ? null : reader.GetString(3), reader.GetInt32(4), DateOnly.FromDateTime(reader.GetDateTime(5)));
                 }
                 else if (itemType == 2)
                 {
-                    list.Add(new MedicalSupply(reader.GetString(1), reader.GetInt32(4)));
+                    item = new MedicalSupply(reader.GetString(1), reader.GetInt32(4));
                 }
+                list.Add(item);
             }
             reader.Close();
         }
@@ -43,10 +45,11 @@ public class InventoryDb
 
     public void Add(HomeFirstAidKitItem itemToAdd)
     {
+
         if (itemToAdd is Drug drugToAdd)
         {
             connectionToMySQL.ExecuteNonQuery($"INSERT INTO Inventory (ItemType, ItemName, PackageSize, Units, Quantity, Expiration) " +
-                $"VALUES (1,'{drugToAdd.Name}',{drugToAdd.PackageSize},'{drugToAdd.Units}',{drugToAdd.Quantity},{drugToAdd.Expiration.ToString("yyyy-MM-dd")})");
+                $"VALUES (1,'{drugToAdd.Name}',{(drugToAdd.PackageSize ==null ? "null" : drugToAdd.PackageSize)},{(drugToAdd.Units == null ? "null" : "'" + drugToAdd.Units + "'")},{drugToAdd.Quantity},'{drugToAdd.Expiration.ToString("yyyy-MM-dd")}')");
         }
         else if (itemToAdd is MedicalSupply medicalSupplyToAdd)
         {

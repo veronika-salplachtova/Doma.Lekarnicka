@@ -26,13 +26,13 @@ public class HomeFirstAidKitInventory
 
     public void AddItem(HomeFirstAidKitItem itemToAdd)
     {
-        homeFirstAidKitList.Add(itemToAdd);
-        db.Add(itemToAdd);
+       homeFirstAidKitList.Add(itemToAdd);
+       db.Add(itemToAdd);
     }
 
     public void Remove(string nameItemToRemove)
     {
-        HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Equals(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
+       HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Equals(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
         homeFirstAidKitList.Remove(itemToRemove);
         db.Remove(nameItemToRemove);
     }
