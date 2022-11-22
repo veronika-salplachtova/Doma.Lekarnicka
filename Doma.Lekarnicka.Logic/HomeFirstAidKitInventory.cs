@@ -7,7 +7,8 @@ public class HomeFirstAidKitInventory
 {
     private List<HomeFirstAidKitItem> homeFirstAidKitList;
     private InventoryDb db;
-    public HomeFirstAidKitInventory()
+  
+    public void StartRead()
     {
         db = new InventoryDb();
         homeFirstAidKitList = db.Read();
@@ -27,8 +28,8 @@ public class HomeFirstAidKitInventory
 
     public void AddItem(HomeFirstAidKitItem itemToAdd)
     {
-       homeFirstAidKitList.Add(itemToAdd);
-       db.Add(itemToAdd);
+        homeFirstAidKitList.Add(itemToAdd);
+        db.Add(itemToAdd);
     }
 
     public void Remove(string nameItemToRemove)

@@ -27,9 +27,25 @@ public class DomaciLekarnickaConsole
         homeFirstAidKitInventory = new();
     }
 
+    private bool StartRead()
+    {
+        try
+        {
+            homeFirstAidKitInventory.StartRead();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to load data: " + ex.Message);
+            return false;
+        }
+    }
 
     public void Run()
     {
+        if (!StartRead())
+            return;
+
         Console.WriteLine("Home first aid kit");
         ViewOptionsTable();
         string choice = Console.ReadLine();
@@ -63,9 +79,9 @@ public class DomaciLekarnickaConsole
         }
     }
 
-
     private void ViewOptionsTable()
     {
+        Console.WriteLine("");
         Console.WriteLine("Choose one of the following options:");
 
         foreach (KeyValuePair<string, string> option in userOptions)
@@ -76,40 +92,49 @@ public class DomaciLekarnickaConsole
 
     private void ViewAllItems()
     {
-        if (homeFirstAidKitInventory.HomeFirstAidKitList.Count == 0)
+        try
         {
-            Console.WriteLine("The list is empty.");
-        }
-        else
-        {
-            Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size" + "Units".PadRight(15, ' ') + "Quantity".PadRight(15, ' ') + "Expiration");
-            foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
+            if (homeFirstAidKitInventory.HomeFirstAidKitList.Count == 0)
             {
-                if (item is Drug)
+                Console.WriteLine("The list is empty.");
+            }
+            else
+            {
+                Console.WriteLine("List of drugs:" + "\nItem name".PadRight(15, ' ') + "Package size" + "Units".PadRight(15, ' ') + "Quantity".PadRight(15, ' ') + "Expiration");
+                foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
                 {
-                    Console.WriteLine(item.ToString());
+                    if (item is Drug)
+                    {
+                        Console.WriteLine(item.ToString());
+                    }
+                }
+
+                Console.WriteLine("\nList of medical supplies:" + "\nItem name".PadRight(15, ' ') + "Quantity".PadRight(15, ' '));
+                foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
+                {
+                    if (item is MedicalSupply)
+                    {
+                        Console.WriteLine(item.ToString());
+                    }
                 }
             }
-
-            Console.WriteLine("\nList of medical supplies:" + "\nItem name".PadRight(15, ' ') + "Quantity".PadRight(15, ' '));
-            foreach (HomeFirstAidKitItem item in homeFirstAidKitInventory.HomeFirstAidKitList)
-            {
-                if (item is MedicalSupply)
-                {
-                    Console.WriteLine(item.ToString());
-                }
-            }
         }
-
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to load data. Error: " + ex.Message);
+        }  
     }
-
+    
     private void AddNewItem(HomeFirstAidKitItemType userChoiceItemType)
     {
-        string itemName = GetNonEmptyStringFromUser("Write the name of the item.");
-
-        if (itemName != null)
+        try
         {
-            bool addItemToList = true;
+            string itemName = GetNonEmptyStringFromUser("Write the name of the item.");
+
+            if (itemName == null)
+            {
+                return;
+            }
 
             if (homeFirstAidKitInventory.DoesExistItemWithName(itemName))
             {
@@ -117,78 +142,91 @@ public class DomaciLekarnickaConsole
                 string userChoiceAddExistingItem = Console.ReadLine();
                 if (userChoiceAddExistingItem != "1")
                 {
-                    addItemToList = false;
+                    return;
                 }
             }
 
-            if (addItemToList)
+            int? quantity = GetNonEmptyAndCorrectInt("Write the quantity of item.");
+
+            if (quantity == null)
             {
-                int? quantity = GetNonEmptyAndCorrectInt("Write the quantity of item.");
-                if (quantity != null)
-                {
-                    switch(userChoiceItemType)
-                    {
-                        case HomeFirstAidKitItemType.Drug:                                
-                    
-                            DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY.");
-                            if (itemExpiration != null)
-                            {
-                                Console.WriteLine("Do you want to enter the package size?\nYes - 1\nNo - Whatever else.");
-                                int? packageSize;
-                                string units;
-
-                                bool userWantsToEnterPackageSize = Console.ReadLine() == "1";
-
-                                if (userWantsToEnterPackageSize)
-                                {
-                                    packageSize = GetNonEmptyAndCorrectInt("Write the package size.");
-
-                                    if (packageSize != null)
-                                    {
-                                        units = GetNonEmptyStringFromUser("Write a units of item (pcs, tbl, g, ml)");
-                                        if (units != null)
-                                        {
-                                            homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
-                                            Console.WriteLine($"The item {itemName} has been added.");
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    packageSize = null;
-                                    units = null;
-                                    homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
-                                    Console.WriteLine($"The item {itemName} has been added.");
-                                }
-                            };
-                            break;
-
-                        case HomeFirstAidKitItemType.MedicalSupply:
-                            homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName, quantity.Value));
-                            Console.WriteLine($"The item {itemName} has been added.");
-                            break;
-                            
-                    }                    
-                }
+                return;
             }
+
+            switch (userChoiceItemType)
+            {
+                case HomeFirstAidKitItemType.Drug:
+                    DateOnly? itemExpiration = GetNonEmptyAndCorrectDateFromUser("Write the expiration of the item in format D.M.YYYY.");
+                    if (itemExpiration == null)
+                    {
+                        return;
+                    }
+
+                    Console.WriteLine("Do you want to enter the package size?\nYes - 1\nNo - Whatever else.");
+
+                    bool userWantsToEnterPackageSize = Console.ReadLine() == "1";
+                    int? packageSize;
+                    string units;
+
+                    if (userWantsToEnterPackageSize)
+                    {
+                        packageSize = GetNonEmptyAndCorrectInt("Write the package size.");
+
+                        if (packageSize == null)
+                        {
+                            return;
+                        }
+
+                        units = GetNonEmptyStringFromUser("Write a units of item (pcs, tbl, g, ml)");
+
+                        if (units == null)
+                        {
+                            return;
+                        }
+
+                        homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
+                    }
+                    else
+                    {
+                        packageSize = null;
+                        units = null;
+                        homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
+                    }
+                    break;
+
+                case HomeFirstAidKitItemType.MedicalSupply:
+                    homeFirstAidKitInventory.AddItem(new MedicalSupply(itemName, quantity.Value));
+                    break;
+            };
+            Console.WriteLine($"The item {itemName} has been added.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to add item. Error: " + ex.Message);
         }
     }
 
-
     private void RemoveItem()
     {
-        string itemNameForRemove = GetNonEmptyStringFromUser("Write the name of the drug or the medical supplies.");
-        if (itemNameForRemove != null)
+        try
         {
-            if (homeFirstAidKitInventory.DoesExistItemWithName(itemNameForRemove))
+            string itemNameForRemove = GetNonEmptyStringFromUser("Write the name of the drug or the medical supplies.");
+            if (itemNameForRemove != null)
             {
-                homeFirstAidKitInventory.Remove(itemNameForRemove);
-                Console.WriteLine($"{itemNameForRemove} has been removed from the inventory.");
+                if (homeFirstAidKitInventory.DoesExistItemWithName(itemNameForRemove))
+                {
+                    homeFirstAidKitInventory.Remove(itemNameForRemove);
+                    Console.WriteLine($"{itemNameForRemove} has been removed from the inventory.");
+                }
+                else
+                {
+                    Console.WriteLine($"{itemNameForRemove} couldn't be deleted because doesn't exist in the inventory.");
+                }
             }
-            else
-            {
-                Console.WriteLine($"{itemNameForRemove} couldn't be deleted because doesn't exist in the inventory.");
-            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to remove item. Error: " + ex.Message);
         }
     }
 
