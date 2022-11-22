@@ -38,7 +38,6 @@ public class DomaciLekarnickaConsole
         {
             switch (choice)
             {
-
                 case "1":
                     ViewAllItems();
                     break;
@@ -67,7 +66,6 @@ public class DomaciLekarnickaConsole
 
     private void ViewOptionsTable()
     {
-        Console.WriteLine("");
         Console.WriteLine("Choose one of the following options:");
 
         foreach (KeyValuePair<string, string> option in userOptions)
@@ -152,7 +150,6 @@ public class DomaciLekarnickaConsole
                                         {
                                             homeFirstAidKitInventory.AddItem(new Drug(itemName, packageSize, units, quantity.Value, itemExpiration.Value));
                                             Console.WriteLine($"The item {itemName} has been added.");
-
                                         }
                                     }
                                 }
@@ -171,8 +168,7 @@ public class DomaciLekarnickaConsole
                             Console.WriteLine($"The item {itemName} has been added.");
                             break;
                             
-                    }
-                    
+                    }                    
                 }
             }
         }

@@ -36,9 +36,9 @@ public class InventoryDb
             }
             reader.Close();
         }
-        catch
+        catch (Exception ex)
         {
-
+            
         }
         return list;
     }

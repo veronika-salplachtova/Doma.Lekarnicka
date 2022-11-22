@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 
 namespace Doma.Lekarnicka.Logic;
 
@@ -32,7 +33,7 @@ public class HomeFirstAidKitInventory
 
     public void Remove(string nameItemToRemove)
     {
-       HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Equals(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
+        HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Equals(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
         homeFirstAidKitList.Remove(itemToRemove);
         db.Remove(nameItemToRemove);
     }
