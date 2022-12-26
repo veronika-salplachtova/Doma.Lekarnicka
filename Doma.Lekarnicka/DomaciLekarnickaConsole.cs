@@ -24,9 +24,19 @@ public class DomaciLekarnickaConsole
 
     public DomaciLekarnickaConsole()
     {
-        homeFirstAidKitInventory = new();
-    }
+        try
+        {
+            homeFirstAidKitInventory = new();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Failed to load data: " + ex.Message);
+            homeFirstAidKitInventory = null;
+        }
+	}
 
+  
+/*
     private bool StartRead()
     {
         try
@@ -39,12 +49,14 @@ public class DomaciLekarnickaConsole
             Console.WriteLine("Failed to load data: " + ex.Message);
             return false;
         }
-    }
+    }*/
 
     public void Run()
     {
-        if (!StartRead())
+        if (homeFirstAidKitInventory == null)
+        {
             return;
+        }
 
         Console.WriteLine("Home first aid kit");
         ViewOptionsTable();

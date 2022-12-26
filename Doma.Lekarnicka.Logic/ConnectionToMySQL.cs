@@ -7,11 +7,12 @@ public class ConnectionToMySQL
     MySqlConnection conn;
     string myConnectionString = "server=lekarnicka.cizzqrz9ailg.us-east-1.rds.amazonaws.com;uid=LekarnickaUser;pwd=1234;database=Lekarnicka";
 
-    public void Connect()
+    public bool Connect()
     {
        conn = new();
        conn.ConnectionString = myConnectionString;
        conn.Open();
+        return true;
     }
 
     public MySqlDataReader ExecuteReader(string sql)
