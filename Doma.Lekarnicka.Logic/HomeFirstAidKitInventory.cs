@@ -8,18 +8,12 @@ public class HomeFirstAidKitInventory
     private List<HomeFirstAidKitItem> homeFirstAidKitList;
     private InventoryDb db;
 
-	public HomeFirstAidKitInventory()
-	{
-		db = new InventoryDb();
-		homeFirstAidKitList = db.Read();
-	}
-/*
+
 	public void StartRead()
     {
         db = new InventoryDb();
         homeFirstAidKitList = db.Read();
-    }*/
-
+    }
 
 
     public IReadOnlyList<HomeFirstAidKitItem> HomeFirstAidKitList { get { return homeFirstAidKitList; } }

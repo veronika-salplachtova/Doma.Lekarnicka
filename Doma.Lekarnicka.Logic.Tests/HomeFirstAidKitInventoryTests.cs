@@ -6,6 +6,7 @@ namespace Doma.Lekarnicka.Logic.Tests
         public void DrugIsAddToDrugList()
         {
             HomeFirstAidKitInventory listOfItem = new();
+            listOfItem.StartRead();
             Drug drug = new("ParalenAdd", 100, "tbl", 2, new(2001, 1, 1));
             listOfItem.AddItem(drug);
             Assert.Contains(drug, listOfItem.HomeFirstAidKitList);
@@ -15,17 +16,19 @@ namespace Doma.Lekarnicka.Logic.Tests
         [Fact]
         public void RemovingDrugByExistingNameInInventory_RemovesDrugWithTheSameName()
         {
-            HomeFirstAidKitInventory inventory = new();
-            Drug drug = new("TestParalen", 100, "tbl", 2, new(2001, 1, 1));
-            inventory.AddItem(drug);
-            inventory.Remove("TestParalen");
-            Assert.DoesNotContain(drug, inventory.HomeFirstAidKitList);
+            HomeFirstAidKitInventory listOfItem = new();
+			listOfItem.StartRead();
+			Drug drug = new("TestParalen", 100, "tbl", 2, new(2001, 1, 1));
+            listOfItem.AddItem(drug);
+            listOfItem.Remove("TestParalen");
+            Assert.DoesNotContain(drug, listOfItem.HomeFirstAidKitList);
         }
 
         [Fact]
         public void DrugNameWithLowerCase_IsFoundInTheInventoryWhenContainsSameNameWithUpperCase()
         {   HomeFirstAidKitInventory listOfItem = new();
-            Drug drug = new("ParalenAdd", 100, "tbl", 2, new(2001, 1, 1));
+			listOfItem.StartRead();
+			Drug drug = new("ParalenAdd", 100, "tbl", 2, new(2001, 1, 1));
             listOfItem.AddItem(drug);
             Assert.True(listOfItem.DoesExistItemWithName("paralenAdd"));
 			listOfItem.Remove("ParalenAdd");
@@ -34,11 +37,12 @@ namespace Doma.Lekarnicka.Logic.Tests
         [Fact]
         public void NonExistingDrugNameInInventory_ReturnsFalseForExistsCheck()
         {
-            HomeFirstAidKitInventory inventory = new();
-            Drug drug = new("ParalenAdd", 100, "tbl", 2, new(2001, 1, 1));
-            inventory.AddItem(drug);
-            Assert.False(inventory.DoesExistItemWithName("Paral"));
-			inventory.Remove("ParalenAdd");
+            HomeFirstAidKitInventory listOfItem = new();
+			listOfItem.StartRead();
+			Drug drug = new("ParalenAdd", 100, "tbl", 2, new(2001, 1, 1));
+            listOfItem.AddItem(drug);
+            Assert.False(listOfItem.DoesExistItemWithName("Paral"));
+			listOfItem.Remove("ParalenAdd");
 		}
     }
 }

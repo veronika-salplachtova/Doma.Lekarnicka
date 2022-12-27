@@ -22,21 +22,8 @@ public class DomaciLekarnickaConsole
         {"5", "End" }
     };
 
-    public DomaciLekarnickaConsole()
-    {
-        try
-        {
-            homeFirstAidKitInventory = new();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Failed to load data: " + ex.Message);
-            homeFirstAidKitInventory = null;
-        }
-	}
+ 
 
-  
-/*
     private bool StartRead()
     {
         try
@@ -49,11 +36,11 @@ public class DomaciLekarnickaConsole
             Console.WriteLine("Failed to load data: " + ex.Message);
             return false;
         }
-    }*/
+    }
 
     public void Run()
     {
-        if (homeFirstAidKitInventory == null)
+        if (!StartRead())
         {
             return;
         }
