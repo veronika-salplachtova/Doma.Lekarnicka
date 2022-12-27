@@ -22,7 +22,10 @@ public class DomaciLekarnickaConsole
         {"5", "End" }
     };
 
- 
+    public DomaciLekarnickaConsole()
+    {
+        homeFirstAidKitInventory = new();
+    }
 
     private bool StartRead()
     {

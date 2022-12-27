@@ -20,7 +20,7 @@ public class HomeFirstAidKitInventory
 
     public bool DoesExistItemWithName(string nameItem)
     {
-        HomeFirstAidKitItem foundName = homeFirstAidKitList.Find(i => i.Name.Equals(nameItem, StringComparison.InvariantCultureIgnoreCase));
+        HomeFirstAidKitItem foundName = homeFirstAidKitList.Find(i => i.Name.Contains(nameItem, StringComparison.InvariantCultureIgnoreCase));
         if (foundName == null)
         {
             return false;
