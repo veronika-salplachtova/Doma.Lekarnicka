@@ -52,6 +52,6 @@ public class InventoryDb
 
     public void Remove(string itemNameToRemove)
     {
-        connectionToMySQL.ExecuteNonQuery($"DELETE FROM Inventory WHERE ItemName = '{itemNameToRemove}' LIMIT 1");
+        connectionToMySQL.ExecuteNonQuery($"DELETE FROM Inventory WHERE ItemName = '%{itemNameToRemove}%' LIMIT 1");
     }
 }

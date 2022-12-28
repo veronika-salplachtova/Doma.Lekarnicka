@@ -21,7 +21,8 @@ public class HomeFirstAidKitInventory
     public bool DoesExistItemWithName(string nameItem)
     {
         HomeFirstAidKitItem foundName = homeFirstAidKitList.Find(i => i.Name.Contains(nameItem, StringComparison.InvariantCultureIgnoreCase));
-        if (foundName == null)
+		//HomeFirstAidKitItem foundName = homeFirstAidKitList.Find(i => i.Name.Equals(nameItem, StringComparison.InvariantCultureIgnoreCase));
+		if (foundName == null)
         {
             return false;
         }
@@ -36,8 +37,9 @@ public class HomeFirstAidKitInventory
 
     public void Remove(string nameItemToRemove)
     {
-        HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Equals(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
-        homeFirstAidKitList.Remove(itemToRemove);
+        HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Contains(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
+		//HomeFirstAidKitItem itemToRemove = homeFirstAidKitList.Find(i => i.Name.Equals(nameItemToRemove, StringComparison.InvariantCultureIgnoreCase));
+		homeFirstAidKitList.Remove(itemToRemove);
         db.Remove(nameItemToRemove);
     }
 
